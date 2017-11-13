@@ -78,7 +78,7 @@ public class TService extends Service {
         final IntentFilter filter = new IntentFilter();
         filter.addAction(ACTION_OUT);
         filter.addAction(ACTION_IN);
-        this.br_call = new CallBr();
+        this.br_call = new CallBr(ACTION_IN,ACTION_OUT,audiofile,recorder,recordstarted);
         this.registerReceiver(this.br_call, filter);
 
         // if(terminate != null) {
@@ -87,7 +87,7 @@ public class TService extends Service {
         return START_NOT_STICKY;
     }
 
-    public class CallBr extends BroadcastReceiver {
+    /*public class CallBr extends BroadcastReceiver {
         Bundle bundle;
         String state;
         String inCall, outCall;
@@ -153,6 +153,6 @@ public class TService extends Service {
                 }
             }
         }
-    }
+    }*/
 
 }
