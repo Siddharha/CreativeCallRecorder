@@ -1,11 +1,15 @@
 package com.deuexmachina.creativecallrecorder;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+
+import in.creativelizard.androidpermission.CreativePermission;
 
 /**
  * Created by siddhartha on 13/11/17.
@@ -15,12 +19,32 @@ public class RecordActivity extends Activity {
     private static final int REQUEST_CODE = 0;
     private DevicePolicyManager mDPM;
     private ComponentName mAdminName;
+    private static final int PERMISSION_ALL = 100;
+    private CreativePermission myPermission;
+    private String[] PERMISSIONS = {
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.PROCESS_OUTGOING_CALLS,
+            Manifest.permission.READ_PHONE_STATE};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initialize();
+        checkPermission();
 
+    }
+
+    private void checkPermission() {
+        if(!CreativePermission.hasPermissions(PERMISSIONS)) {
+            myPermission.reqPermisions();
+        }else {
+            enableAdminPermission();
+        }
+    }
+
+    private void enableAdminPermission() {
         try {
             // Initiate DevicePolicyManager.
             mDPM = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
@@ -42,6 +66,10 @@ public class RecordActivity extends Activity {
         }
     }
 
+    private void initialize() {
+
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -51,5 +79,16 @@ public class RecordActivity extends Activity {
             startService(intent);
         }
     }
+
+    @Override public void onRequestPermissionsResult(int requestCode,
+                                                     @NonNull String[] permissions,
+                                                     @NonNull int[] grantResults)
+    { super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if(requestCode == PERMISSION_ALL) {
+            checkPermission();
+        }
+    }
+
 
 }

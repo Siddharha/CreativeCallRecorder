@@ -1,5 +1,6 @@
 package com.deuexmachina.creativecallrecorder;
 
+import android.Manifest;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -19,6 +20,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Timer;
+
+import in.creativelizard.androidpermission.CreativePermission;
 
 /**
  * Created by siddhartha on 13/11/17.
@@ -42,9 +45,6 @@ public class TService extends Service {
     private static final String ACTION_IN = "android.intent.action.PHONE_STATE";
     private static final String ACTION_OUT = "android.intent.action.NEW_OUTGOING_CALL";
     private CallBr br_call;
-
-
-
 
     @Override
     public IBinder onBind(Intent arg0) {
