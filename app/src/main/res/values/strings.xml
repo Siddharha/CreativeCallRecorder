@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Creative Call Recorder</string>
+    <string name="device_admin_label">admin label</string>
+</resources>
