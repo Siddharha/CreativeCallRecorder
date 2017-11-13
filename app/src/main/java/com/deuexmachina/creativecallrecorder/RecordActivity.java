@@ -32,42 +32,39 @@ public class RecordActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initialize();
-        checkPermission();
-
+        enableAdminPermission();
     }
 
-    private void checkPermission() {
+
+    private void enableAdminPermission() {
         if(!CreativePermission.hasPermissions(PERMISSIONS)) {
             myPermission.reqPermisions();
         }else {
-            enableAdminPermission();
-        }
-    }
+            try {
+                // Initiate DevicePolicyManager.
+                mDPM = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
+                mAdminName = new ComponentName(this, CallRecorderDeviceAdminReceiver.class);
 
-    private void enableAdminPermission() {
-        try {
-            // Initiate DevicePolicyManager.
-            mDPM = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
-            mAdminName = new ComponentName(this, DeviceAdminDemo.class);
-
-            if (!mDPM.isAdminActive(mAdminName)) {
-                Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
-                intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, mAdminName);
-                intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Click on Activate button to secure your application.");
-                startActivityForResult(intent, REQUEST_CODE);
-            } else {
-                // mDPM.lockNow();
-                // Intent intent = new Intent(MainActivity.this,
-                // TrackDeviceService.class);
-                // startService(intent);
+                if (!mDPM.isAdminActive(mAdminName)) {
+                    Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
+                    intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, mAdminName);
+                    intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Click on Activate button to secure your application.");
+                    startActivityForResult(intent, REQUEST_CODE);
+                } else {
+                    // mDPM.lockNow();
+                    // Intent intent = new Intent(MainActivity.this,
+                    // TrackDeviceService.class);
+                    // startService(intent);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
+
     }
 
     private void initialize() {
-
+        myPermission = new CreativePermission(this,PERMISSIONS,PERMISSION_ALL);
     }
 
     @Override
@@ -86,7 +83,7 @@ public class RecordActivity extends Activity {
     { super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         if(requestCode == PERMISSION_ALL) {
-            checkPermission();
+            enableAdminPermission();
         }
     }
 
